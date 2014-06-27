@@ -1,1 +1,44 @@
 /* Empty. Add your own CSS if you like */
+.poster {
+	width: 100%;
+	height: 100%;
+	background-size: cover;
+	background-repeat: no-repeat;
+	background-position: 50% 50%;
+}
+
+.poster img {
+	width: 100%;
+	height: 100%;
+}
+
+.poster h4 {
+	position: relative;
+	top: -30px;
+	text-align: center;
+	color: #fff;
+}
+
+#watchlist-icon {
+	z-index: 1;
+	position: absolute;
+	top: 150px;
+	left: 50%;
+	margin-left: -80px;
+}
+
+#watchlist-icon img {
+	width: 160px;
+	height: 160px;
+}
+
+#rating-widget {
+	position: absolute;
+	top: 250px;
+	left: 50%;
+	margin-left: -240px;
+}
+
+#rating-widget li {
+	display: inline;
+}

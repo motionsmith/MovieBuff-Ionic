@@ -1,0 +1,67 @@
+<ion-view title="Picks">
+ 	
+ 	<ion-nav-buttons side="left">
+		<button menu-toggle="left"class="button button-icon icon ion-navicon"></button>
+	</ion-nav-buttons>
+
+	<ion-content class="has-header" ng-controller="EntityController">
+
+		<!-- Poster Slide Box -->
+		<ion-slide-box show-pager="false" on-slide-changed="handleSlideChanged($index)">
+			<ion-slide ng-repeat="entity in picks.data">
+					<div class="poster">
+				    	<img ng-src="{{entity.image_large}}" ng-click="toggleWishlist()" />
+				    	<h4>{{entity.name}}</h4>	
+					</div>
+				    <!-- <fv-rating-widget></fv-rating-widget>
+				    <h2 id="movie-title">{{entity.name}}</h2> -->
+		    </ion-slide>
+	    </ion-slide-box>
+
+	    <fv-add-to-watchlist></fv-add-to-watchlist>
+	    <fv-rating-widget></fv-rating-widget>
+
+	    <!-- Trailer Panel -->
+	    <fv-trailer-panel ng-show="supportsTrailerPanel()" entity="trailerImage"></fv-trailer-panel>
+
+	    <!-- Synopsis Panel -->
+	    <fv-synopsis-panel ng-show="supportsSynopsisPanel()" entity="synopsisDescription"></fv-synopsis-panel>
+
+	    <!-- Services Panel -->
+	    <!--div ng-show="supportsServicesPanel()" class="card detail-panel" id="services-panel">
+	    	<h3 class="item item-divider">Watch On</h3>
+	    	<ul class="item">
+	    		<li>[hulu]</li>
+	    		<li>[Netflix]</li>
+	    	</ul>
+	    	<p class="item">
+	    		<a href="#" class="subdued">Hulu</a>
+	    		<a href="#" class="subdued">Netflix</a>
+	    	</p>
+	    </div-->
+
+		<!-- Cast and Crew Panel -->
+		<!--iv ng-show="supportsCastAndCrewPanel()" class="card detail-panel" id="cast-panel">
+			<h3 class="item item-divider">Cast and Crew</h3>
+			<div class="item">
+				<div ng-repeat="group in entity.participantGroups">
+		    		<h4>{{group.name}}</h4>
+		    		<ul>
+		    			<li ng-repeat="participant in group.participants">{{participant.name}}</li>
+		    		</ul>
+		    	</div>
+	   		</div>
+	    </div-->
+
+	    <!-- Info Panel -->
+	    <!--div class="card detail-panel" id="info-panel">
+	    	<h3 class="item item-divider">Additional Info</h3>
+	    	<table class="item">
+	    		<tr ng-repeat="detail in entity.details">
+	    			<td class="right">{{detail.key}}</td>
+	    			<td class="left">{{detail.value}}</td>
+	    		</tr>
+	    	</table>
+	    </div-->
+	</ion-content>
+</ion-view>
