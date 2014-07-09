@@ -12,10 +12,13 @@
     <link href="css/ionic.app.css" rel="stylesheet">
     -->
 
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
     <!-- ionic/angularjs js -->
     <script src="lib/ionic/js/ionic.bundle.js"></script>
     <script src="lib/angular-resource/angular-resource.min.js"></script>
     <script src="lib/angular-cookies/angular-cookies.min.js"></script>
+    <script src="lib/ngstorage/ngStorage.min.js"></script>
 
     <!-- cordova script (this will be a 404 during development) -->
     <script src="cordova.js"></script>
@@ -25,13 +28,19 @@
     <script src="js/controllers.js"></script>
     <script src="js/app-config-module.js"></script>
     <script src="js/entitycontroller.js"></script>
+    <script src="js/login-controller.js"></script>
+    <script src="js/side-menu-controller.js"></script>
     <script src="services/entity-service.js"></script>
     <script src="services/entity-group-service.js"></script>
     <script src="services/user-status-service.js"></script>
     <script src="services/tag-service.js"></script>
+    <script src="services/login-service.js"></script>
+    <script src="services/filter-groups-service.js"></script>
+    <script src="services/recommendation-service.js"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/1.11.8/TweenMax.min.js"></script>
 
     <script src="directives/fv-rating-widget.js"></script>
+    <script src="directives/fv-poster.js"></script>
   </head>
 
   <body ng-app="starter">

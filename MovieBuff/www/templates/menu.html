@@ -7,7 +7,7 @@
     <ion-nav-view name="menuContent" animation="slide-left-right"></ion-nav-view>
   </ion-pane>
 
-  <ion-side-menu side="left">
+  <ion-side-menu side="left" ng-controller="SideMenuCtrl">
     <header class="bar bar-header bar-stable">
       <h1 class="title">MovieBuff</h1>
     </header>
@@ -16,11 +16,14 @@
         <ion-item nav-clear menu-close href="#/app/picks">
           Picks
         </ion-item>
-        <ion-item nav-clear menu-close href="#/app/watchlist">
+        <!--ion-item nav-clear menu-close href="#/app/watchlist">
           Watchlist
-        </ion-item>
-        <ion-item nav-clear menu-close href="#/app/notInterested">
+        </ion-item-->
+        <!--ion-item nav-clear menu-close href="#/app/notInterested">
           Not Interested
+        </ion-item-->
+        <ion-item nav-clear menu-close ng-click="signUserOut()">
+          Sign Out
         </ion-item>
       </ion-list>
     </ion-content>

@@ -14,31 +14,83 @@
 
 .poster h4 {
 	position: relative;
-	top: -30px;
+	top: -50px;
 	text-align: center;
-	color: #fff;
+	color: white;
+	z-index: 1;
+}
+
+.poster-gradient {
+	position: relative;
+	top: -140px;
+	height: 100px;
+	background-image: linear-gradient(rgba(0, 0, 0, 0), rgba(40, 40, 40, 100));
+}
+
+.validated-form input.ng-valid.ng-dirty {
+	background-color: white;
+}
+
+.validated-form input.ng-invalid.ng-dirty {
+	background-color: white;
 }
 
 #watchlist-icon {
 	z-index: 1;
 	position: absolute;
-	top: 150px;
+	top: 100px;
 	left: 50%;
-	margin-left: -80px;
+	margin-left: -71px;
 }
 
 #watchlist-icon img {
-	width: 160px;
-	height: 160px;
+	width: 142px;
+	height: 142px;
 }
 
 #rating-widget {
 	position: absolute;
-	top: 250px;
+	top: 350px;
 	left: 50%;
-	margin-left: -240px;
+	/*margin-left: -107.5px;*/
+}
+
+#rating-widget ul {
+	margin-left: -107.5px;
 }
 
 #rating-widget li {
 	display: inline;
+}
+
+#rating-widget img {
+	width: 38.4px;
+	height: 38.4px;
+	z-index: 99;
+}
+
+#wishlisted-indicator {
+	margin-top: -10px;
+	margin-left: -25px;
+}
+
+#wishlisted-indicator img {
+	width: 50px;
+	height: 50px;
+}
+
+#dismiss-indicator {
+	z-index: 4;
+	width: 100%;
+	margin-top: 50px;
+	text-align: center;
+}
+
+#dismiss-indicator h2 {
+	color: #BABABA;
+}
+
+#login-error-message {
+	color: #FF0000;
+	text-align: center;
 }
