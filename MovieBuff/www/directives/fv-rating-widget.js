@@ -27,7 +27,7 @@
 
 			//select all star images in this widget.
 			if (angular.isDefined(starImages) == false || starImages.length == 0) {
-				starImages = directiveElement.find("#stars-list > li > img");
+				starImages = jQuery(".star-image");
 			}
 
 			if (angular.isDefined(wishlistedIndicator) == false)
@@ -44,7 +44,6 @@
 
 			if (isOnWishlist == false && ratingNumber > 0) {
 				for (var i = 0; i < starImages.length; i++) {
-
 					//Make the 'rated' stars highlighted and the not rated stars not highlighted.
 					var isSelected = i < ratingNumber;
 					starImages[i].src = isSelected ? selectedImage : normalImage;
@@ -55,12 +54,10 @@
 						timeline.to(starImages[i], .25, {y: -25, delay: 0.1 * i});
 						timeline.to(starImages[i], .25, {y: 0, ease: Quad.easeIn});
 						timeline.play();
-						//TweenMax.to(starImages[i], 0.25, {y: -25, yoyo: true, repeat: 1, delay: 0.1 * i});
 					}
 				}
 			}
 			else {
-				//Make all the stars disabled. We don't have data yet.
 				for (var i = 0; i < starImages.length; i++) {
 					starImages[i].src = disabledImage;
 				}
