@@ -4,10 +4,6 @@
 	entityModule.directive("fvPoster", [function() {
 		
 		function link(scope, element, attrs) {
-			var window_height = $(window).height();
-			jQuery('.poster').css('height', window_height - 43);
-			jQuery('#rating-widget').css('top', window_height - 125);
-
 			scope.$on("entityDismissed", function(event, entityDetails) {
 				if (scope.entity.uri != entityDetails.data.uri) {
 					return;
