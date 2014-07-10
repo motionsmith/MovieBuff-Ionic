@@ -159,9 +159,15 @@
 			var entityDetails = getEntityDetails($scope.currSlideIndex);
 
 			//Update the cache
-			entityDetails.data.isNotInterested = isNotInterested;
+			entityDetails.data.my_rating = {
+					id: "notinterested"
+			};
 
 			//Update the MW
+			Tag.post({
+				uri: entityDetails.data.uri,
+				tag_label: "notinterested"
+			});
 
 			//Move to the next slide.
 			if (isNotInterested) {
@@ -182,6 +188,15 @@
 			$scope.$broadcast('scroll.refreshComplete');
 		}
 
+		$scope.isNotInterested = function(slideIndex) {
+			if ($scope.hasEntityDetails(slideIndex) == false) {
+				return false;
+			}
+
+			var currEntityDetails = getEntityDetails(slideIndex);
+			return angular.isDefined(currEntityDetails.data.my_rating) && currEntityDetails.data.my_rating.id == "notinterested";;
+		}
+
 		//Updates ui-bound variables so that the UI can sync with the data.
 		function refreshDetails() {
 
@@ -190,7 +205,6 @@
 			$scope.trailerImage = getTrailerImage(i);
 			$scope.synopsisDescription = getSynopsisDescription(i);
 		}
-
 
 		//Request add'l details about this entity (if we don't already have them).
 		function requestCurrEntityDetails() {
