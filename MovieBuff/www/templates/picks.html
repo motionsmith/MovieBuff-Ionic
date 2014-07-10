@@ -16,14 +16,14 @@
 			    </ion-slide>
 		    </ion-slide-box>
 		    
-		    <fv-add-to-watchlist></fv-add-to-watchlist>
-		    <fv-rating-widget></fv-rating-widget>
-
 		    <!-- Trailer Panel -->
 		    <fv-trailer-panel ng-show="supportsTrailerPanel()" entity="trailerImage"></fv-trailer-panel>
 
 		    <!-- Synopsis Panel -->
 		    <fv-synopsis-panel ng-show="supportsSynopsisPanel()" entity="synopsisDescription"></fv-synopsis-panel>
+		    
+		    <fv-add-to-watchlist></fv-add-to-watchlist>
+		    <fv-rating-widget></fv-rating-widget>
 
 		    <!-- Services Panel -->
 		    <!--div ng-show="supportsServicesPanel()" class="card detail-panel" id="services-panel">
