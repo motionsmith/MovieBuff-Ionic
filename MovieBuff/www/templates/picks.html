@@ -13,9 +13,10 @@
 			<ion-slide-box show-pager="false" on-slide-changed="handleSlideChanged($index)">
 				<ion-slide ng-repeat="entity in picks.data">
 					<fv-poster entity="entity" fv-click="addToWishlist()"></fv-poster>
+					<fv-rating-widget></fv-rating-widget>
 			    </ion-slide>
 		    </ion-slide-box>
-		    
+
 		    <!-- Trailer Panel -->
 		    <fv-trailer-panel ng-show="supportsTrailerPanel()" entity="trailerImage"></fv-trailer-panel>
 
@@ -23,7 +24,6 @@
 		    <fv-synopsis-panel ng-show="supportsSynopsisPanel()" entity="synopsisDescription"></fv-synopsis-panel>
 		    
 		    <fv-add-to-watchlist></fv-add-to-watchlist>
-		    <fv-rating-widget></fv-rating-widget>
 
 		    <!-- Services Panel -->
 		    <!--div ng-show="supportsServicesPanel()" class="card detail-panel" id="services-panel">

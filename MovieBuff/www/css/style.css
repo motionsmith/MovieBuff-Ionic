@@ -50,13 +50,9 @@
 
 #rating-widget {
 	position: absolute;
-	top: 330px;
-	left: 50%;
-	/*margin-left: -107.5px;*/
-}
-
-#rating-widget ul {
-	margin-left: -107.5px;
+	bottom: 40px;
+	width: 100%;
+	text-align: center;
 }
 
 #rating-widget li {
