@@ -69,14 +69,18 @@
 	z-index: 99;
 }
 
-#wishlisted-indicator {
+.rating-indicator {
 	margin-top: -10px;
 	margin-left: -25px;
 }
 
-#wishlisted-indicator img {
+.rating-indicator img {
 	width: 50px;
 	height: 50px;
+}
+
+#rating-loading-container {
+	margin-top: 40px;
 }
 
 #dismiss-indicator {

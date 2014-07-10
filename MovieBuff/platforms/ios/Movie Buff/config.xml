@@ -28,12 +28,15 @@
     <feature name="Device">
         <param name="ios-package" value="CDVDevice" />
     </feature>
-    <name>HelloCordova</name>
+    <name>Movie Buff</name>
     <description>
-        An Ionic Framework and Cordova project.
+        Movie Buff is a brand new, intuitive way to pick a movie to watch on any streaming service that you use.
+        It quickly learns your tastes and feeds you movies that are actually worth seeing.
+        
+        Movie Buff does this by getting to know you better than any other movie app. In the process, it makes the unwieldy number of available movies feel more manageable.
     </description>
-    <author email="hi@ionicframework" href="http://ionicframework.com/">
-      Ionic Framework Team
+    <author email="erics@vulcan.com" href="http://fayve.com/">
+      Vulcan Inc.
     </author>
     <content src="index.html" />
     <access origin="*" />
