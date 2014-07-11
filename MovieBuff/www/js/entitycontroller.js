@@ -43,7 +43,7 @@
 
 			//Tell the middleware that we've "seen" this slide
 			if (oldIndex < $index) {
-				$scope.setSeen(oldIndex);
+				$scope.ignore(86400);
 			}
 
 			//Store which slide we are on, from the DOM's perspective (not a data-perspective)
@@ -118,12 +118,6 @@
 			
 		}
 
-		$scope.setSeen = function() {
-			var entityDetails = getEntityDetails($scope.currSlideIndex);
-
-			//Update the MW
-		}
-
 		$scope.getRatingNumber = function(slideIndex) {
 			var entityDetails = getEntityDetails(slideIndex);
 			if (angular.isDefined(entityDetails) == false || entityDetails.$resolved == false) {
@@ -181,6 +175,23 @@
 
 			$scope.$broadcast("entityDismissed", entityDetails);
 			$scope.$broadcast('scroll.refreshComplete');
+		}
+
+		$scope.ignore = function(ttl) {
+			var entityDetails = getEntityDetails($scope.currSlideIndex);
+
+			if (angular.isDefined(entityDetails.data.my_rating)) {
+				return;
+			}
+
+			//Tell the middleware to ignore
+			Tag.post({
+				uri: entityDetails.data.uri,
+				tag_label: "ignore",
+				ttl: ttl
+			}, function(result) {
+				console.log(result);
+			});
 		}
 
 		$scope.isNotInterested = function(slideIndex) {
