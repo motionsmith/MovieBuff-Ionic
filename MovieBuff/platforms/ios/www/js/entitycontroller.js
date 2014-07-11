@@ -13,14 +13,9 @@
 		var nextSlideTimoutPromise;
 		$scope.currSlideIndex = 0;
 		$scope.entityDetails = [];
-		$scope.hasContent = true; //Set to "false" when there are no entity results.
 
 		//Grab the list of movie recommendations from the MW
-		$scope.picks = Recommendations.query({}, function() {
-			$ionicSlideBoxDelegate.update();
-			refreshDetails();
-			requestCurrEntityDetails();
-		});
+		$scope.picks = Recommendations.query({}, handleGetPicksResponse, handleGetPicksError);
 
 		/* Returns true if we should show the trailer panel. */
 		$scope.supportsTrailerPanel = function() {
@@ -321,13 +316,33 @@
 
 		//Uses the slide index to get the entity details.
 		function getEntityDetails(slideIndex) {
-			if (angular.isDefined($scope.picks.data) && $scope.picks.data.length > 0) {
+			if ($scope.picks.data && $scope.picks.data.length > 0) {
 				var currEntityUri = $scope.picks.data[slideIndex].uri;
 				return $scope.entityDetails[currEntityUri];
 			}
-			
 		}
 
+		function handleGetPicksResponse(result) {
+			if (result.status.code != 200) {
+				$scope.hasContent = false;
+				$scope.noContentMessage = "Whoops, there's a problem. It's a \"" + result.status.code + " " + result.status.message + "\". Try logging out and back in.";
+			} 
+			else if (angular.isDefined($scope.picks.data) == false || $scope.picks.data.length <= 0) {
+				$scope.hasContent = false;
+				$scope.noContentMessage = "Whoops! No movies to recommend. Try coming back later.";
+			}
+			else {
+				$scope.hasContent = true;
+				$ionicSlideBoxDelegate.update();
+				refreshDetails();
+				requestCurrEntityDetails();
+			}
+		}
+
+		function handleGetPicksError(error) {
+			$scope.hasContent = false;
+			$scope.noContentMessage = "Whoops, there's a problem. Technically, it's \"" + error + "\". Try logging out and back in; Or try again later.";
+		}
 	}]);
 
 	//TRAILER PANEL

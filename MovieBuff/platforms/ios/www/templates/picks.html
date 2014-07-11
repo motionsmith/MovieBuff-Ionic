@@ -62,8 +62,8 @@
 		    	</table>
 		    </div-->
 		</div>
-		<div ng-hide="hasContent">
-			No
+		<div ng-show="hasContent" id="no-content">
+			{{noContentMessage}}
 		</div>
 	</ion-content>
 </ion-view>
