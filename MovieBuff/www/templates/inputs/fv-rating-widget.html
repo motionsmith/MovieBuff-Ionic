@@ -1,14 +1,10 @@
 <div id="rating-widget">
-	<div id="rating-loading-container" ng-show="hasEntityDetails(currSlideIndex) == false"></div>
-	<div class="rating-indicator" ng-show="isNotInterested(currSlideIndex)">
-		<img src="img/not-interested-indicator.png" ng-click="rate(0)" />
+	
+	<div id="actions">
+        <img src="img/actions/ignore.png" id="ignore-button" ng-click="setDisposition('ignore')" class="action-item" />
+		<img src="img/actions/dislike.png" id="dislike-button" ng-click="setDisposition('dislike')" class="action-item">
+        <img src="img/actions/like.png" id="like-button" ng-click="setDisposition('like')" class="action-item">
+        <img src="img/actions/save.png" id="save-button" ng-click="setDisposition('watchlist')" class="action-item">
+        <img src="img/actions/revert.png" id="revert-button" ng-click="setDisposition('')" class="action-item" />
 	</div>
-	<div class="rating-indicator" ng-show="isOnWishlist(currSlideIndex)">
-		<img src="img/watchlisted-indicator.png" ng-click="removeFromWishlist()" />
-	</div>
-	<ul id="stars-list" ng-hide="isOnWishlist(currSlideIndex) || isNotInterested(currSlideIndex) || hasEntityDetails(currSlideIndex) == false">
-		<li ng-repeat="star in [1, 2, 3, 4, 5]">
-			<img src="img/stars/rating-star-disabled.png" ng-click="rate(star)" class="star-image" />
-		</li>
-	</ul>
 </div>

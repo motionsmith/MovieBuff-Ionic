@@ -4,92 +4,147 @@
 
 	entityModule.directive('fvRatingWidget', ['$ionicScrollDelegate', function($ionicScrollDelegate) {
 
-		var starImages;
-		var disabledImage = "img/stars/rating-star-disabled.png";
-		var normalImage = "img/stars/rating-star-normal.png";
-		var selectedImage = "img/stars/rating-star-selected.png";
 		var directiveScope;
 		var directiveElement;
+		var buttons;
+		var revertButton;
 		var ratingLoadingContainer;
 		var ratingLoadingSpinner;
+		var posterOverlay;
 
 		function link(scope, element, attrs) {
 			directiveScope = scope;
 			directiveElement = element;
-			scope.$on("entityDetailsReceived", updateWidgetState);
-			scope.$on("currentSlideChanged", updateWidgetState);
-			scope.$on("addedToWatchlist", updateWidgetState);
-			scope.$on("removedFromWatchlist", updateWidgetState);
-			scope.$on("entityRated", updateWidgetState);
+
+			var windowWidth = $(window).width();
+			var windowHeight = $(window).height();
+			$("#rating-widget").css('top', windowHeight - 125);
+			
+			buttons = [
+			{
+				element: jQuery("#ignore-button")[0],
+				x: windowWidth * 0.2 - 24,
+				disposition: "ignore"
+			},
+			{
+				element: jQuery("#dislike-button")[0],
+				x: windowWidth * 0.4 - 24,
+				disposition: "dislike"
+			},
+			{
+				element: jQuery("#like-button")[0],
+				x: windowWidth * 0.6 - 24,
+				disposition: "like"
+			},
+			{
+				element: jQuery('#save-button')[0],
+				x: windowWidth * 0.8 - 24,
+				disposition: "watchlist"
+			}];
+
+			//Initial position of all the buttons
+			for (var i = 0; i < buttons.length; i++) {
+				//$(buttons[i].element).css("left", buttons[i].x + 'px');
+				TweenMax.set(buttons[i].element, {x: buttons[i].x, autoAlpha: 0});
+			}
+
+			revertButton = jQuery("#revert-button");
+			TweenMax.set(revertButton, {x: windowWidth/2 - 24, autoAlpha: 0});
+
+			posterOverlay = jQuery("#poster-overlay");
+			TweenMax.set(posterOverlay, {autoAlpha: 0, height: windowHeight - 43});
+
+			/*ratingLoadingContainer = jQuery("#actions")[0];
+			TweenMax.set(ratingLoadingContainer, {x: windowWidth/2});
+
+			var spinnerOptions = {
+				lines: 7, // The number of lines to draw
+				length: 6, // The length of each line
+				width: 6, // The line thickness
+				radius: 10, // The radius of the inner circle
+				corners: 1, // Corner roundness (0..1)
+				rotate: 0, // The rotation offset
+				direction: 1, // 1: clockwise, -1: counterclockwise
+				color: '#fff', // #rgb or #rrggbb or array of colors
+				speed: 1.5, // Rounds per second
+				trail: 24, // Afterglow percentage
+				shadow: false, // Whether to render a shadow
+				hwaccel: true, // Whether to use hardware acceleration
+				className: 'spinner', // The CSS class to assign to the spinner
+				zIndex: 1, // The z-index (defaults to 2000000000)
+				top: '50%', // Top position relative toå parent
+				left: '50%' // Left position relative to parent
+			};
+			ratingLoadingSpinner = new Spinner(spinnerOptions);*/
+
+			scope.$on("entityDetailsReceived", updateDisposition);
+			scope.$on("currentSlideChanged", updateDisposition);
+            scope.$on("entityDispositionChanged", updateDisposition);
 		}
 
-		//Can be called any time to refresh the visual state of the component.
-		function updateWidgetState() {
+		//Can be called any time to update the visual state of the disposition icons.
+		function updateDisposition(event, entityDetails) {
+			var currDisposition = directiveScope.getDisposition();
 
-			//select all star images in this widget.
-			if (angular.isDefined(starImages) == false || starImages.length == 0) {
-				starImages = jQuery(".star-image");
-			}
+			//Tween the action buttons
+			var windowWidth = $(window).width();
+			for (var i = 0; i < buttons.length; i++) {
+				var tweenProperties = {};
 
-			//Select the container that we'll put the loading spinner in.
-			if (angular.isDefined(ratingLoadingContainer) == false) {
-				ratingLoadingContainer = jQuery("#rating-loading-container")[0];
-				var spinnerOptions = {
-					lines: 7, // The number of lines to draw
-					length: 6, // The length of each line
-					width: 6, // The line thickness
-					radius: 10, // The radius of the inner circle
-					corners: 1, // Corner roundness (0..1)
-					rotate: 0, // The rotation offset
-					direction: 1, // 1: clockwise, -1: counterclockwise
-					color: '#fff', // #rgb or #rrggbb or array of colors
-					speed: 1.5, // Rounds per second
-					trail: 24, // Afterglow percentage
-					shadow: false, // Whether to render a shadow
-					hwaccel: true, // Whether to use hardware acceleration
-					className: 'spinner', // The CSS class to assign to the spinner
-					zIndex: 1, // The z-index (defaults to 2000000000)
-					top: '50%', // Top position relative toå parent
-					left: '50%' // Left position relative to parent
-				};
-				ratingLoadingSpinner = new Spinner(spinnerOptions);
-			}
-
-			var isOnWishlist = directiveScope.isOnWishlist(directiveScope.currSlideIndex);
-			var hasRatingData = angular.isDefined(directiveScope) && directiveScope.hasEntityDetails(directiveScope.currSlideIndex);
-			var ratingNumber = -1;
-			if (hasRatingData) {
-				ratingNumber = directiveScope.getRatingNumber(directiveScope.currSlideIndex);
-			}
-
-			if (isOnWishlist == false && ratingNumber > 0) {
-				for (var i = 0; i < starImages.length; i++) {
-					//Make the 'rated' stars highlighted and the not rated stars not highlighted.
-					var isSelected = i < ratingNumber;
-					starImages[i].src = isSelected ? selectedImage : normalImage;
-
-					//Animate a 'bounce' for the rated stars
-					if (isSelected && TweenMax.isTweening(starImages[i]) == false) {
-						var timeline = new TimelineMax();
-						timeline.to(starImages[i], .25, {y: -25, delay: 0.1 * i});
-						timeline.to(starImages[i], .25, {y: 0, ease: Quad.easeIn});
-						timeline.play();
+				//This is the tween that occurs if the icon is selected
+				if (buttons[i].disposition == currDisposition) {
+					tweenProperties = {
+						x: windowWidth/2 - 24,
+						y: -250,
+						scale: 4,
+						autoAlpha: 1,
+						ease: Back.easeOut,
+					};
+					$(buttons[i].element).css("pointer-events", "none");
+				}
+				//Otherwise, we use this tween.
+				else {
+					tweenProperties = {
+						x: buttons[i].x,
+						scale: 1,
+						y: 0,
+						autoAlpha: .9
+					};
+					if (currDisposition != "") {
+						tweenProperties.y = 75;
+						tweenProperties.autoAlpha = 0;
 					}
+					$(buttons[i].element).css("pointer-events", "inherit");
 				}
-			}
-			else {
-				for (var i = 0; i < starImages.length; i++) {
-					starImages[i].src = disabledImage;
-				}
+				TweenMax.to(buttons[i].element, 0.38, tweenProperties);
 			}
 
-			//Start or stop the spinner
-			if (directiveScope.hasEntityDetails(directiveScope.currSlideIndex)) {
-				ratingLoadingSpinner.stop();
+			//Tween the revert button
+			var revertButtonTween = {};
+			if (currDisposition != "" && currDisposition != "?") {
+				revertButtonTween = {
+					y: 0,
+					autoAlpha: 0.9
+				};
+			}
+			else
+			{
+				revertButtonTween = {
+					y: 75,
+					autoAlpha: 0
+				};
+			}
+			TweenMax.to(revertButton, 0.38, revertButtonTween);
+
+			//Tween the poster overlay
+			var posterOverlayTween = {};
+			if (currDisposition == "" || currDisposition == "?") {
+				TweenMax.to(posterOverlay, 0.38, {autoAlpha: 0});
 			}
 			else {
-				ratingLoadingSpinner.spin(ratingLoadingContainer);
+				TweenMax.to(posterOverlay, 0.38, {autoAlpha: 0.5});
 			}
+			
 		}
 
 		return {

@@ -42,9 +42,9 @@
 			var oldIndex = $scope.currSlideIndex;
 
 			//Tell the middleware that we've "seen" this slide
-			if (oldIndex < $index) {
+			/*if (oldIndex < $index) {
 				$scope.ignore(86400);
-			}
+			}*/
 
 			//Store which slide we are on, from the DOM's perspective (not a data-perspective)
 			$scope.currSlideIndex = $index;
@@ -64,61 +64,7 @@
 			}
 		};
 
-		//Adds the movie to the wishlist or removes it.
-		$scope.toggleWishlist = function() {
-
-			//Cannot toggle the wishlist if we don't know whether this movie is already on it.
-			if ($scope.hasEntityDetails($scope.currSlideIndex) == false) { return; }
-
-			if ($scope.isOnWishlist($scope.currSlideIndex) == false) {
-				$scope.addToWishlist();
-			}
-			else {
-				$scope.removeFromWishlist();
-			}
-		};
-
-		//Rate a movie, updating the local data and remote data.
-		$scope.rate = function(rating) {
-			//Cancel a move to the next slide if there is one on a timer.
-			if (angular.isDefined(nextSlideTimoutPromise)) {
-				$timeout.cancel(nextSlideTimoutPromise);
-			}
-			
-			var entityDetails = getEntityDetails($scope.currSlideIndex);
-			var ratingString = angular.isNumber(rating) ? app.ratings[rating] : rating;
-			var ratingNumber = app.ratings.indexOf(ratingString);
-
-			if (angular.isDefined(entityDetails)) {
-
-				//Update the cache
-				entityDetails.data.my_rating = {
-						id: ratingString
-				};
-
-				//Update the MW
-				Tag.post({
-					uri: entityDetails.data.uri,
-					tag_label: ratingString
-				});
-
-				//Move to the next slide.
-				//TODO Move this into a directive?
-				if (ratingNumber > 0) {
-					nextSlideTimoutPromise = $timeout(function() {
-						$ionicSlideBoxDelegate.next();
-					}, 500 + (100 * ratingNumber));
-				}
-
-				$scope.$broadcast("entityRated", entityDetails);
-			}
-		};
-
-		$scope.removeEntityAt = function(slideIndex) {
-			
-		}
-
-		$scope.getRatingNumber = function(slideIndex) {
+		/*$scope.getRatingNumber = function(slideIndex) {
 			var entityDetails = getEntityDetails(slideIndex);
 			if (angular.isDefined(entityDetails) == false || entityDetails.$resolved == false) {
 				return -1;
@@ -129,7 +75,7 @@
 			}
 
 			return app.ratings.indexOf(entityDetails.data.my_rating.id);
-		};
+		};*/
 
 		//Returns true if entity details have been downloaded for the provdided slide.
 		$scope.hasEntityDetails = function(slideIndex) {
@@ -138,51 +84,12 @@
 			return angular.isDefined(currEntityDetails) && currEntityDetails.$resolved;
 		}
 
-		$scope.setNotInterested = function (isNotInterested) {
-
-			//Cancel a move to the next slide if there is one on a timer.
-			if (angular.isDefined(nextSlideTimoutPromise)) {
-				$timeout.cancel(nextSlideTimoutPromise);
-			}
-
-			var entityDetails = getEntityDetails($scope.currSlideIndex);
-
-			//Update the cache
-			entityDetails.data.my_rating = {
-					id: "notinterested"
-			};
-
-			//Update the MW
-			Tag.post({
-				uri: entityDetails.data.uri,
-				tag_label: "notinterested"
-			});
-
-			//Move to the next slide.
-			if (isNotInterested) {
-				nextSlideTimoutPromise = $timeout(function() {
-					$ionicSlideBoxDelegate.next();
-				}, 200);
-			}
-
-			/*$timeout(function() {
-				$scope.picks.data.splice($ionicSlideBoxDelegate.currentIndex() - 1, 1);
-				$ionicSlideBoxDelegate.update();
-				$timeout(function() {
-					$ionicSlideBoxDelegate.slide($ionicSlideBoxDelegate.currentIndex() - 1, 1);
-				}, 1);
-			}, 500);*/
-
-			$scope.$broadcast("entityDismissed", entityDetails);
-			$scope.$broadcast('scroll.refreshComplete');
-		}
-
 		$scope.ignore = function(ttl) {
-			var entityDetails = getEntityDetails($scope.currSlideIndex);
-
-			if (angular.isDefined(entityDetails.data.my_rating)) {
+			if ($scope.hasEntityDetails($scope.currSlideIndex) == false) {
 				return;
 			}
+
+			var entityDetails = getEntityDetails($scope.currSlideIndex);
 
 			//Tell the middleware to ignore
 			Tag.post({
@@ -194,14 +101,111 @@
 			});
 		}
 
-		$scope.isNotInterested = function(slideIndex) {
-			if ($scope.hasEntityDetails(slideIndex) == false) {
-				return false;
+        // "?", "", "dislike", "like", "ignore", "watchlist"
+        $scope.getDisposition = function() {
+
+        	//If we don't have entity details yet, return unknown.
+        	if ($scope.hasEntityDetails($scope.currSlideIndex) == false) {
+        		return "?";
+        	}
+
+        	var entityDetails = getEntityDetails($scope.currSlideIndex);
+
+        	//Is it watchlisted?
+			if (entityDetails.data.tag && entityDetails.data.tag.Wishlist == "Wishlist") {
+				return "watchlist";
 			}
 
-			var currEntityDetails = getEntityDetails(slideIndex);
-			return angular.isDefined(currEntityDetails.data.my_rating) && currEntityDetails.data.my_rating.id == "notinterested";;
-		}
+        	 //Do we have a rating?
+            if (entityDetails.data.my_rating) {
+            	//Return our own special disposition enum based on what the data says
+            	switch (entityDetails.data.my_rating.id) {
+            		case "not_rated":
+            			return "";
+            		case "worstever":
+            		case "blech":
+            		case "meh":
+            			return "dislike";
+            		case "fayve":
+            		case "alltimefayve":
+            			return "like";
+            		case "notinterested":
+            			return "ignore";
+            	}
+            }
+
+        	return "";
+        }
+
+        //"", dislike", "like", "ignore", "watchlist"
+        $scope.setDisposition = function(newDisposition) {
+
+        	//Can't set disposition until we have details.
+        	if ($scope.hasEntityDetails($scope.currSlideIndex) == false) {
+        		throw {message: "Cannot set disposition before entity details have been obtained."};
+        	}
+
+        	//Make sure the disposition is actually changing.
+        	var oldDisposition = $scope.getDisposition();
+        	if (newDisposition == oldDisposition) {
+        		return;
+        	}
+
+        	var entityDetails = getEntityDetails($scope.currSlideIndex);
+
+        	//Update watchlist state
+        	if (newDisposition == "watchlist") {
+        		//Add to watchlist
+				entityDetails.data.tag = { Wishlist: "Wishlist" };
+
+				//Update the MW
+				Tag.post({
+					uri: entityDetails.data.uri,
+					tag_label: "Wishlist"
+				});
+        	}
+        	else if (oldDisposition == "watchlist")
+        	{
+        		//Remove from watchlist
+    			entityDetails.data.tag = null;
+
+    			//Update the MW
+				Tag.delete({
+					uri: entityDetails.data.uri,
+					tag_label: "Wishlist"
+				});
+        	}
+
+        	//Update rating locally
+        	switch (newDisposition) {
+        		case "":
+        		case "watchlist":
+        			//Remove rating
+        			entityDetails.data.my_rating = {id: "not_rated"};
+        			break;
+        		case "dislike":
+        			entityDetails.data.my_rating = {id: "worstever"};
+        			break;
+        		case "like":
+        			entityDetails.data.my_rating = {id: "alltimefayve"};
+        			break;
+        		case "ignore":
+        			entityDetails.data.my_rating = {id: "notinterested"};
+        			break;
+        		default:
+        			throw {message: "Don't understand disposition " + newDisposition};
+        	}
+
+        	//Update the rating on MW
+        	if (entityDetails.data.my_rating) {
+				Tag.post({
+					uri: entityDetails.data.uri,
+					tag_label: entityDetails.data.my_rating.id
+				});
+			}
+
+			$scope.$broadcast("entityDispositionChanged", entityDetails);
+        }
 
 		//Updates ui-bound variables so that the UI can sync with the data.
 		function refreshDetails() {
@@ -226,6 +230,8 @@
 						refreshDetails();
 						$scope.$emit("entityDetailsReceived");
 					}
+
+					$scope.entityDetails[currEntityUri].disposition
 				});
 			}
 		}
@@ -264,66 +270,7 @@
 			}
 		}
 
-		//Retuns whether or not the provided slide is on the wishlist.
-		$scope.isOnWishlist = function(slideIndex) {
-			if ($scope.hasEntityDetails(slideIndex) == false) {
-				return false;
-			}
-
-			var currEntityDetails = getEntityDetails(slideIndex);
-			return angular.isDefined(currEntityDetails.data.tag) && currEntityDetails.data.tag.Wishlist == "Wishlist";
-		}
-
-		//Adds the slide to the wishlist (even if it is already on it).
-		$scope.addToWishlist = function() {
-			if ($scope.isOnWishlist($scope.currSlideIndex)) {
-				return;
-			}
-
-			//Cancel a move to the next slide if there is one on a timer.
-			if (angular.isDefined(nextSlideTimoutPromise)) {
-				$timeout.cancel(nextSlideTimoutPromise);
-			}
-
-			var currEntityDetails = getEntityDetails($scope.currSlideIndex);
-
-			//Update the cache
-			currEntityDetails.data.tag = {
-				Wishlist: "Wishlist"
-			};
-
-			//Update the MW
-			Tag.post({
-				uri: currEntityDetails.data.uri,
-				tag_label: "Wishlist"
-			});
-
-			$scope.$emit("addedToWatchlist", currEntityDetails);
-
-			nextSlideTimoutPromise = $timeout(function() {
-					$ionicSlideBoxDelegate.next();
-				}, 700);
-		}
-
-		//Removes the movie from the wishlist (even if it isn't on it already).
-		$scope.removeFromWishlist = function() {
-			if ($scope.isOnWishlist($scope.currSlideIndex) == false) {
-				return;
-			}
-
-			var currEntityDetails = getEntityDetails($scope.currSlideIndex);
-
-			//Update the cache
-			currEntityDetails.data.tag.Wishlist = null;
-
-			//Update the MW
-			Tag.delete({
-				uri: currEntityDetails.data.uri,
-				tag_label: "Wishlist"
-			});
-
-			$scope.$emit("removedFromWatchlist", currEntityDetails);
-		}
+		
 
 		//Uses the slide index to get the entity details.
 		function getEntityDetails(slideIndex) {

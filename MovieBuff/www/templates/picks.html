@@ -3,16 +3,14 @@
 		<button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
 	</ion-nav-buttons>
 
-	<!--fv-dismiss-indicator></fv-dismiss-indicator-->
-
 	<ion-content class="has-header" ng-controller="EntityController">
 		<div ng-show="hasContent">
-			<ion-refresher pulling-text="Not interested?" on-refresh="setNotInterested(true)" pulling-icon="ion-trash-b" refreshing-icon="ion-trash-b" refreshing-text="Not interested!"></ion-refresher>
+			<ion-refresher pulling-text="Not interested?" on-refresh="setDisposition('ignore')" pulling-icon="ion-trash-b" refreshing-icon="ion-trash-b" refreshing-text="Not interested!"></ion-refresher>
 
 			<!-- Poster Slide Box -->
 			<ion-slide-box show-pager="false" on-slide-changed="handleSlideChanged($index)">
 				<ion-slide ng-repeat="entity in picks.data">
-					<fv-poster entity="entity" fv-click="addToWishlist()"></fv-poster>
+					<fv-poster entity="entity" fv-click="setDisposition('watchlist')"></fv-poster>
 			    </ion-slide>
 		    </ion-slide-box>
 		    
@@ -21,8 +19,8 @@
 
 		    <!-- Synopsis Panel -->
 		    <fv-synopsis-panel ng-show="supportsSynopsisPanel()" entity="synopsisDescription"></fv-synopsis-panel>
-		    
-		    <fv-add-to-watchlist></fv-add-to-watchlist>
+            
+            <div id="poster-overlay"></div>
 		    <fv-rating-widget></fv-rating-widget>
 
 		    <!-- Services Panel -->

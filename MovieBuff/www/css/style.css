@@ -17,7 +17,7 @@
 	top: -50px;
 	text-align: center;
 	color: white;
-	z-index: 1;
+	z-index: 2;
 }
 
 .poster-gradient {
@@ -27,71 +27,34 @@
 	background-image: linear-gradient(rgba(0, 0, 0, 0), rgba(40, 40, 40, 100));
 }
 
-.validated-form input.ng-valid.ng-dirty {
-	background-color: white;
+.poster-dim {
+    -webkit-filter: brightness(50%);
 }
 
-.validated-form input.ng-invalid.ng-dirty {
-	background-color: white;
-}
-
-#watchlist-icon {
-	z-index: 1;
+#poster-overlay {
 	position: absolute;
-	top: 100px;
-	left: 50%;
-	margin-left: -71px;
-}
-
-#watchlist-icon img {
-	width: 142px;
-	height: 142px;
+	top: 0px;
+	background-color: black;
+	width: 100%;
+	height: 100%;
+	pointer-events: none;
 }
 
 #rating-widget {
 	position: absolute;
 	top: 330px;
-	left: 50%;
-	/*margin-left: -107.5px;*/
+	left: 0;
 }
 
-#rating-widget ul {
-	margin-left: -107.5px;
-}
-
-#rating-widget li {
-	display: inline;
-}
-
-#rating-widget img {
-	width: 38.4px;
-	height: 38.4px;
+.action-item {
+    position: absolute;
+    width: 48px;
+	height: 48px;
 	z-index: 99;
-}
-
-.rating-indicator {
-	margin-top: -10px;
-	margin-left: -25px;
-}
-
-.rating-indicator img {
-	width: 50px;
-	height: 50px;
 }
 
 #rating-loading-container {
 	margin-top: 40px;
-}
-
-#dismiss-indicator {
-	z-index: 4;
-	width: 100%;
-	margin-top: 50px;
-	text-align: center;
-}
-
-#dismiss-indicator h2 {
-	color: #BABABA;
 }
 
 #login-error-message {
