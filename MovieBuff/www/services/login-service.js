@@ -42,8 +42,9 @@
         var actions = {
             query: queryAction,
             login: loginAction,
-            logout: logoutAction,
-            authorizeToken: authorizeTokenAction
+            logout: queryAction,
+            register: loginAction,
+            authorizeToken: queryAction
         };
 
         return $resource(resourceUrl, defaultResourceParams, actions);

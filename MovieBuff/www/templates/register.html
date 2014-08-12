@@ -1,0 +1,22 @@
+<ion-view title="Sign up">
+	<ion-content class="has-header" ng-controller="RegisterController" ng-show="showRegisterScreen">
+		<form name="registerForm" novalidate class="validated-form">
+			<label class="item item-input" name="uEmail">
+				<i class="icon ion-email placeholder-icon"></i>
+				<input type="email"  placeholder="Email" ng-model="email" required ng-model-options="{ updateOn: 'blur' }" >
+			</label>
+			<label name="uPassword" class="item item-input">
+				<i class="icon ion-locked placeholder-icon"></i>
+				<input type="password" placeholder="Password" ng-model="password" ng-minlength="6" required >
+			</label>
+			<label name="uConfirmPassword" class="item item-input">
+				<i class="icon ion-locked placeholder-icon"></i>
+				<input type="password" placeholder="Confirm Password" ng-minlength="6" ng-model="confirmPassword" required >
+			</label>
+			<div style="padding: 10px">
+				<button ng-disabled="registerForm.$invalid" class="button button-full button-positive" ng-click="onRegisterClick(email, password, confirmPassword)">Sign up</button>
+			</div>
+			<p class="form-error-message" ng-show="registerErrorMessage">{{registerErrorMessage}}</p>
+		</form>
+	</ion-content>
+</ion-view>

@@ -1,4 +1,4 @@
-<ion-view title="Sign into Fayve">
+<ion-view title="Sign into MovieBuff">
 	<ion-content class="has-header" ng-controller="LoginController" ng-show="showLoginScreen">
 		<form name="loginForm" novalidate class="validated-form">
 			<label class="item item-input">
@@ -12,7 +12,8 @@
 			<div style="padding: 10px">
 				<button ng-disabled="loginForm.$invalid" class="button button-full button-positive" ng-click="onLogin()">Sign in</button>
 			</div>
-			<div id="login-error-message" ng-show="loginErrorMessage">{{loginErrorMessage}}</div>
+			<div class="form-error-message" ng-show="loginErrorMessage">{{loginErrorMessage}}</div>
+			<p style="text-align: center">New? <a href="#/app/register">Sign up</a>.</p>
 		</form>
 	</ion-content>
 </ion-view>
