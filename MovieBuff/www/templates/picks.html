@@ -5,8 +5,6 @@
 
 	<ion-content class="has-header" ng-controller="EntityController">
 		<div ng-show="hasContent">
-			<ion-refresher pulling-text="Not interested?" on-refresh="setDisposition('ignore')" pulling-icon="ion-trash-b" refreshing-icon="ion-trash-b" refreshing-text="Not interested!"></ion-refresher>
-
 			<!-- Poster Slide Box -->
 			<ion-slide-box show-pager="false" on-slide-changed="handleSlideChanged($index)">
 				<ion-slide ng-repeat="entity in picks.data">
