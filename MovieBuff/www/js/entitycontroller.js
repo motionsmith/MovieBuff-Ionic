@@ -14,6 +14,9 @@
 		$scope.currSlideIndex = 0;
 		$scope.entityDetails = [];
 
+		var positionBar = jQuery('#position-bar');
+		TweenMax.set(positionBar, {width: 0});
+
 		//Grab the list of movie recommendations from the MW
 		$scope.picks = Recommendations.query({}, handleGetPicksResponse, handleGetPicksError);
 
@@ -62,6 +65,12 @@
 			if (angular.isDefined(nextSlideTimoutPromise)) {
 				$timeout.cancel(nextSlideTimoutPromise);
 			}
+
+			var posterListPositionPct = 0;
+			if ($scope.picks.data.length != 0) {
+				posterListPositionPct = Math.round($scope.currSlideIndex / $scope.picks.data.length * 100).toString();
+			}
+			TweenMax.to(positionBar, 0.2, {width: posterListPositionPct + '%'});
 		};
 
 		/*$scope.getRatingNumber = function(slideIndex) {

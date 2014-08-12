@@ -5,6 +5,7 @@
 
 	<ion-content class="has-header" ng-controller="EntityController">
 		<div ng-show="hasContent">
+			<div id="position-bar"></div>
 			<!-- Poster Slide Box -->
 			<ion-slide-box show-pager="false" on-slide-changed="handleSlideChanged($index)">
 				<ion-slide ng-repeat="entity in picks.data">
