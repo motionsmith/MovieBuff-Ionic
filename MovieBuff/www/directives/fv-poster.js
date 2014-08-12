@@ -28,8 +28,7 @@
 			restrict: "E",
 			templateUrl: "templates/fv-poster.html",
 			scope: {
-				entity: '=',
-				fvClick: '&'
+				entity: '='
 			},
 			link: link
 		};
