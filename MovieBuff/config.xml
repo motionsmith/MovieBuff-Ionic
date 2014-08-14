@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.vulcan.MovieBuff" version="0.1.4" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="com.vulcan.MovieBuff" version="0.1.5" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>MovieBuff</name>
     <description>
         MovieBuff is a brand new, intuitive way to pick a movie to watch on any streaming service that you use. It quickly learns your tastes, and feeds you movies that are actually worth seeing.
