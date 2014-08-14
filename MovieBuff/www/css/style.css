@@ -118,3 +118,17 @@
 .service-item img {
 	width: 25px;
 }
+
+#cast-column {
+	width: 50%;
+	float: left;
+}
+
+#crew-column {
+	width: 50%;
+	float: right;
+}
+
+.clear {
+	clear: both;
+}

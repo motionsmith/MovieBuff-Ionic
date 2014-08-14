@@ -23,19 +23,10 @@
 		    <fv-services-panel ng-show="supportsServicesPanel()" images="serviceImages"></fv-services-panel>
 
 			<!-- Cast and Crew Panel -->
-			<!--iv ng-show="supportsCastAndCrewPanel()" class="card detail-panel" id="cast-panel">
-				<h3 class="item item-divider">Cast and Crew</h3>
-				<div class="item">
-					<div ng-repeat="group in entity.participantGroups">	
-			    		<h4>{{group.name}}</h4>
-			    		<ul>
-			    			<li ng-repeat="participant in group.participants">{{participant.name}}</li>
-			    		</ul>
-			    	</div>
-		   		</div>
-		    </div-->
+			<fv-cast-panel ng-show="supportsCastPanel()" cast-members="castMembers" crew-members="crewMembers"></fv-cast-panel>
 
 		    <!-- Info Panel -->
+		    <fv-info-panel ng-show="supportsInfoPanel()" infos="moreInfo"></fv-info-panel>
 		    <!--div class="card detail-panel" id="info-panel">
 		    	<h3 class="item item-divider">Additional Info</h3>
 		    	<table class="item">

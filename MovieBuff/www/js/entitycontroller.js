@@ -37,9 +37,13 @@
 		}
 
 		/* Returns true if we should show the cast and crew panel. */
-		/*$scope.supportsCastAndCrewPanel = function() {
-			return angular.isDefined($scope.entity.participantGroups) && $scope.entity.participantGroups.length > 0;
-		}*/
+		$scope.supportsCastPanel = function() {
+			return ($scope.castMembers && $scope.castMembers.length > 0) || ($scope.crewMembers && $scope.crewMembers.length > 0);
+		}
+
+		$scope.supportsInfoPanel = function() {
+			return ($scope.moreInfo && $scope.moreInfo.length > 0);
+		}
 
 		$scope.handleSlideChanged = function($index) {
 			
@@ -227,6 +231,10 @@
 			$scope.synopsisDescription = getSynopsisDescription(i);
 			$scope.rtRating = getRTRating();
 			$scope.serviceImages = getServiceImages();
+			$scope.castMembers = getCastMembers("actor");
+			$scope.crewMembers = getCastMembers("director");
+			$scope.crewMembers.join(getCastMembers("producer"));
+			$scope.moreInfo = getMoreInfo();
 		}
 
 		//Request add'l details about this entity (if we don't already have them).
@@ -242,7 +250,7 @@
 					if ($scope.currSlideIndex == slideIndexAtRequestTime) {
 						refreshDetails();
 						$scope.$emit("entityDetailsReceived");
-						requestEntityActions();
+						//requestEntityActions();
 					}
 				});
 			}
@@ -394,6 +402,47 @@
 				return $scope.entityActions[currEntityUri];
 			}
 		}
+
+		function getCastMembers(groupName) {
+			if ($scope.hasEntityDetails($scope.currSlideIndex) == false) {
+				return [];
+			}
+
+			var entityDetails = getEntityDetails($scope.currSlideIndex);
+			var castMembers = [];
+			for (var i = 0; i < entityDetails.data.cast_crew.length; i++) {
+				var group = entityDetails.data.cast_crew[i];
+				if (group.id == groupName) {
+					for (var j = 0; j < group.participant.length; j++) {
+						var participant = group.participant[j];
+						castMembers.push(participant.name);
+					}
+				}
+			}
+
+			return castMembers;
+		}
+
+		function getMoreInfo() {
+			if ($scope.hasEntityDetails($scope.currSlideIndex) == false) {
+				return [];
+			}
+
+			var entityDetails = getEntityDetails($scope.currSlideIndex);
+
+			var moreInfo = [];
+			if (entityDetails.data.genre) {
+				moreInfo.push({k: "Genre", v: entityDetails.data.genre});
+			}
+			if (entityDetails.data.runtime) {
+				moreInfo.push({k: "Run time", v: entityDetails.data.runtime});
+			}
+			if (entityDetails.data.release_year) {
+				moreInfo.push({k: "Released", v: entityDetails.data.release_year});
+			}
+
+			return moreInfo;
+		}
 	}]);
 
 	//TRAILER PANEL
@@ -431,6 +480,27 @@
 			templateUrl: 'templates/panels/fv-services-panel.html'
 		};
 	});
+
+	app.directive('fvCastPanel', function() {
+		return {
+			restrict: 'E',
+			scope: {
+				castMembers: '=',
+				crewMembers: '='
+			},
+			templateUrl: 'templates/panels/fv-cast-panel.html'
+		};
+	});
+
+	app.directive('fvInfoPanel', function() {
+		return {
+			restrict: 'E',
+			scope: {
+				infos: '='
+			},
+			templateUrl: 'templates/panels/fv-info-panel.html'
+		};
+	});	
 
 	app.directive('fvAddToWatchlist', function() {
 		function link(scope, element, attrs) {
