@@ -82,3 +82,39 @@
 	height: 6px;
 	z-index: 60;
 }
+
+#synopsis-info li {
+	display: inline;
+	list-style-type: none;
+	padding-right: 8px;
+}
+
+.mpaa-rating {
+	border: 1px solid #000000;
+    padding-left: 2px;
+    padding-right: 2px;
+    border-radius: 2px;
+    text-align: center;
+    color: #000000;
+    font-weight: bold;
+}
+
+.rating-short {
+	padding-left: 4px;
+	padding-right: 4px;
+}
+
+.rt-icon img{
+	width: 24px;
+	vertical-align: middle;
+}
+
+#services-list li {
+	display: inline;
+	list-style-type: none;
+	padding-right: 8px;
+}
+
+.service-item img {
+	width: 25px;
+}

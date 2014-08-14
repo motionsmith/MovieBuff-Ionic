@@ -4,8 +4,21 @@
 		<h3>Synopsis</h3>
 	</div>
 	<div class="item item-text-wrap">
-		<p>{{entity}}</p>
-    	<a href="#" class="subdued">[rt rating]</a>
-    	<a href="#" class="subdued">[ESRB rating]</a>
-		</div>
+		<p>{{synopsis}}</p>
+		<ul id="synopsis-info">
+			<li ng-show="rt >= 0">
+				<span class="rt-icon" ng-show="rt < 60"><img src="img/rt/rotten.png" /></span>
+				<span class="rt-icon" ng-show="rt >= 60"><img src="img/rt/fresh.png" /></span>
+				<span>{{rt}}%</span>
+			</li>
+			<li>
+				<span class="mpaa-rating" ng-show="mpaa == 'NR'">NR</span>
+				<span class="mpaa-rating rating-short" ng-show="mpaa == 'G'">G</span>
+				<span class="mpaa-rating" ng-show="mpaa == 'PG'">PG</span>
+				<span class="mpaa-rating" ng-show="mpaa == 'PG13'">PG-13</span>
+				<span class="mpaa-rating rating-short" ng-show="mpaa == 'R'">R</span>
+				<span class="mpaa-rating" ng-show="mpaa == 'NC17'">NC-17</span>
+			</li>
+		</ul>
+	</div>
 </div>

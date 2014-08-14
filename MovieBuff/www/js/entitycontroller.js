@@ -7,12 +7,13 @@
 	app.ratings = ["not_rated", "worstever", "blech", "meh", "fayve", "alltimefayve"];
 
 	//ENTITY CONTROLLER
-	app.controller('EntityController', ['$http', '$log', '$ionicScrollDelegate', '$ionicSlideBoxDelegate', '$scope', 'Entity', 'EntityGroup', 'UserStatus',	'Tag', '$timeout', 'FilterGroups', 'Recommendations',
-		function($http, $log, $ionicScrollDelegate, $ionicSlideBoxDelegate, $scope, Entity, EntityGroup, UserStatus, Tag, $timeout, FilterGroups, Recommendations) {
+	app.controller('EntityController', ['$http', '$log', '$ionicScrollDelegate', '$ionicSlideBoxDelegate', '$scope', 'Entity', 'EntityGroup', 'UserStatus',	'Tag', '$timeout', 'FilterGroups', 'Recommendations', 'Action',
+		function($http, $log, $ionicScrollDelegate, $ionicSlideBoxDelegate, $scope, Entity, EntityGroup, UserStatus, Tag, $timeout, FilterGroups, Recommendations, Action) {
 		
 		var nextSlideTimoutPromise;
 		$scope.currSlideIndex = 0;
 		$scope.entityDetails = [];
+		$scope.entityActions = [];
 
 		var positionBar = jQuery('#position-bar');
 		TweenMax.set(positionBar, {width: 0});
@@ -31,9 +32,9 @@
 		};
 
 		/* Returns true if we should show the services panel. */
-		/*$scope.supportsServicesPanel = function() {
-			return true;
-		}*/
+		$scope.supportsServicesPanel = function() {
+			return $scope.serviceImages && $scope.serviceImages.length > 0;
+		}
 
 		/* Returns true if we should show the cast and crew panel. */
 		/*$scope.supportsCastAndCrewPanel = function() {
@@ -53,6 +54,7 @@
 			$scope.currSlideIndex = $index;
 
 			refreshDetails();
+			$scope.mpaaRating = getMPAARating();
 
 			//Automatically scrolls the user back to the top so that they can see the poster.
 			$ionicScrollDelegate.scrollTop(true);
@@ -68,7 +70,7 @@
 
 			var posterListPositionPct = 0;
 			if ($scope.picks.data.length != 0) {
-				posterListPositionPct = Math.round($scope.currSlideIndex / $scope.picks.data.length * 100).toString();
+				posterListPositionPct = Math.round($scope.currSlideIndex / ($scope.picks.data.length - 1) * 100).toString();
 			}
 			TweenMax.to(positionBar, 0.2, {width: posterListPositionPct + '%'});
 		};
@@ -223,6 +225,8 @@
 
 			$scope.trailerImage = getTrailerImage(i);
 			$scope.synopsisDescription = getSynopsisDescription(i);
+			$scope.rtRating = getRTRating();
+			$scope.serviceImages = getServiceImages();
 		}
 
 		//Request add'l details about this entity (if we don't already have them).
@@ -232,15 +236,27 @@
 			var slideIndexAtRequestTime = $scope.currSlideIndex;
 
 			//Request detailed data about the current entity, only if we haven't already done so.
-			if ($scope.hasEntityDetails($scope.currSlideIndex) == false) {
+			if ($scope.hasEntityDetails(slideIndexAtRequestTime) == false) {
 				$scope.entityDetails[currEntityUri] = Entity.query({uri: currEntityUri}, function() {
 
 					if ($scope.currSlideIndex == slideIndexAtRequestTime) {
 						refreshDetails();
 						$scope.$emit("entityDetailsReceived");
+						requestEntityActions();
 					}
+				});
+			}
+		}
 
-					$scope.entityDetails[currEntityUri].disposition
+		function requestEntityActions() {
+			var currEntityUri = $scope.picks.data[$scope.currSlideIndex].uri;
+			var slideIndexAtRequestTime = $scope.currSlideIndex;
+
+			if (!hasEntityActions()) {
+				$scope.entityActions[currEntityUri] = Action.query({uri: currEntityUri}, function() {
+					if ($scope.currSlideIndex == slideIndexAtRequestTime) {
+						//Do something?
+					}
 				});
 			}
 		}
@@ -279,7 +295,58 @@
 			}
 		}
 
-		
+		function getRTRating() {
+			if ($scope.hasEntityDetails($scope.currSlideIndex) == false) {
+				return -1;
+			}
+
+			var entityDetails = getEntityDetails($scope.currSlideIndex);
+
+			var rtReview = null;
+			for (var i = 0; i < entityDetails.data.review.length; i++) {
+				if (entityDetails.data.review[i].provider == "Rottentomatoes.com") {
+					rtReview = entityDetails.data.review[i];
+					break;
+				}
+			}
+
+			if (rtReview != null) {
+				return rtReview.critic.score;
+			}
+
+			return -1;
+		}
+
+		function getMPAARating() {
+			var allRatings = $scope.picks.data[$scope.currSlideIndex].rating;
+			var mpaaRating = null;
+			for (var i = 0; i < allRatings.length; i++) {
+				if (allRatings[i].type == 'MPAA') {
+					mpaaRating = allRatings[i];
+					break;
+				}
+			}
+
+			return mpaaRating.rating || "";
+		}
+
+		function getServiceImages() {
+			if ($scope.hasEntityDetails($scope.currSlideIndex) == false) {
+				return [];
+			}
+
+			var entityDetails = getEntityDetails($scope.currSlideIndex);
+			var serviceImages = [];
+			for (var i = 0; i < entityDetails.data.consumable_actions.length; i++) {
+				if (entityDetails.data.consumable_actions[i] == "Netflix") {
+					continue;
+				}
+				var image = "https://s3-us-west-2.amazonaws.com/www.fayve.com/public/service_images/" + entityDetails.data.consumable_actions[i].replace(':', '-') + "/icon.png";
+				serviceImages.push(image);
+			}
+			
+			return serviceImages;
+		}
 
 		//Uses the slide index to get the entity details.
 		function getEntityDetails(slideIndex) {
@@ -302,6 +369,7 @@
 				$scope.hasContent = true;
 				$ionicSlideBoxDelegate.update();
 				refreshDetails();
+				$scope.mpaaRating = getMPAARating();
 				requestCurrEntityDetails();
 			}
 		}
@@ -309,6 +377,19 @@
 		function handleGetPicksError(error) {
 			$scope.hasContent = false;
 			$scope.noContentMessage = "Whoops, there's a problem. Technically, it's \"" + error + "\". Try logging out and back in; Or try again later.";
+		}
+
+		function hasEntityActions() {
+			var actionsForEntity = getEntityActions();
+
+			return actionsForEntity && actionsForEntity.$resolved;
+		}
+
+		function getEntityActions() {
+			if ($scope.picks.data && $scope.picks.data.length > 0) {
+				var currEntityUri = $scope.picks.data[$scope.currSlideIndex].uri;
+				return $scope.entityActions[currEntityUri];
+			}
 		}
 	}]);
 
@@ -329,9 +410,22 @@
 		return {
 			restrict: 'E',
 			scope: {
-				entity: '='
+				synopsis: '=',
+				rt: '=',
+				mpaa: '='
 			},
 			templateUrl: "templates/panels/fv-synopsis-panel.html"
+		};
+	});
+
+	//SERVICES PANEL
+	app.directive('fvServicesPanel', function() {
+		return {
+			restrict: 'E',
+			scope: {
+				images: '=',
+			},
+			templateUrl: 'templates/panels/fv-services-panel.html'
 		};
 	});
 

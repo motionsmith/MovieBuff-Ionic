@@ -17,23 +17,10 @@
 		    <fv-trailer-panel ng-show="supportsTrailerPanel()" entity="trailerImage"></fv-trailer-panel>
 
 		    <!-- Synopsis Panel -->
-		    <fv-synopsis-panel ng-show="supportsSynopsisPanel()" entity="synopsisDescription"></fv-synopsis-panel>
-            
-            <div id="poster-overlay"></div>
-		    <fv-rating-widget></fv-rating-widget>
+		    <fv-synopsis-panel ng-show="supportsSynopsisPanel()" synopsis="synopsisDescription"  rt="rtRating" mpaa="mpaaRating"></fv-synopsis-panel>
 
 		    <!-- Services Panel -->
-		    <!--div ng-show="supportsServicesPanel()" class="card detail-panel" id="services-panel">
-		    	<h3 class="item item-divider">Watch On</h3>
-		    	<ul class="item">
-		    		<li>[hulu]</li>
-		    		<li>[Netflix]</li>
-		    	</ul>
-		    	<p class="item">
-		    		<a href="#" class="subdued">Hulu</a>
-		    		<a href="#" class="subdued">Netflix</a>
-		    	</p>
-		    </div-->
+		    <fv-services-panel ng-show="supportsServicesPanel()" images="serviceImages"></fv-services-panel>
 
 			<!-- Cast and Crew Panel -->
 			<!--iv ng-show="supportsCastAndCrewPanel()" class="card detail-panel" id="cast-panel">
@@ -58,6 +45,9 @@
 		    		</tr>
 		    	</table>
 		    </div-->
+
+		    <div id="poster-overlay"></div>
+		    <fv-rating-widget></fv-rating-widget>
 		</div>
 		<div ng-show="hasContent" id="no-content">
 			{{noContentMessage}}
