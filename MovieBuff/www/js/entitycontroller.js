@@ -327,7 +327,10 @@
 				}
 			}
 
-			return mpaaRating.rating || "";
+			if (mpaaRating == null) {
+				return "";
+			}
+			return mpaaRating.rating;
 		}
 
 		function getServiceImages() {
