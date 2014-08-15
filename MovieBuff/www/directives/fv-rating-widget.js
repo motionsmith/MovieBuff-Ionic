@@ -8,7 +8,6 @@
 		var directiveElement;
 		var buttons;
 		var revertButton;
-		var ratingLoadingContainer;
 		var ratingLoadingSpinner;
 		var posterOverlay;
 
@@ -18,7 +17,7 @@
 
 			var windowWidth = $(window).width();
 			var windowHeight = $(window).height();
-			$("#rating-widget").css('top', windowHeight - 125);
+			element.find("#rating-widget").css('top', windowHeight - 125);
 			
 			buttons = [
 			{
@@ -44,7 +43,6 @@
 
 			//Initial position of all the buttons
 			for (var i = 0; i < buttons.length; i++) {
-				//$(buttons[i].element).css("left", buttons[i].x + 'px');
 				TweenMax.set(buttons[i].element, {x: buttons[i].x, autoAlpha: 0});
 			}
 
@@ -54,10 +52,7 @@
 			posterOverlay = jQuery("#poster-overlay");
 			TweenMax.set(posterOverlay, {autoAlpha: 0, height: windowHeight - 43});
 
-			/*ratingLoadingContainer = jQuery("#actions")[0];
-			TweenMax.set(ratingLoadingContainer, {x: windowWidth/2});
-
-			var spinnerOptions = {
+			/*var spinnerOptions = {
 				lines: 7, // The number of lines to draw
 				length: 6, // The length of each line
 				width: 6, // The line thickness

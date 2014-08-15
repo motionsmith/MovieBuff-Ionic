@@ -53,13 +53,13 @@
 	position: absolute;
 	top: 330px;
 	left: 0;
+	z-index: 99;
 }
 
-.action-item {
+#rating-widget img {
     position: absolute;
     width: 48px;
 	height: 48px;
-	z-index: 99;
 }
 
 #rating-loading-container {
