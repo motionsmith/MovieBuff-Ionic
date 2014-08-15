@@ -33,7 +33,7 @@
             "PACKAGE_NAME": "com.ionicframework.starter"
         },
         "org.apache.cordova.device": {
-            "PACKAGE_NAME": "com.ionicframework.starter"
+            "PACKAGE_NAME": "com.vulcan.MovieBuff"
         }
     },
     "dependent_plugins": {}
