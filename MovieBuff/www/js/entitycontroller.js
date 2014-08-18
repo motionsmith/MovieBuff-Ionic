@@ -347,6 +347,11 @@
 			}
 
 			var entityDetails = getEntityDetails($scope.currSlideIndex);
+
+			if (!entityDetails.data.consumable_actions) {
+				return [];
+			}
+			
 			var serviceImages = [];
 			for (var i = 0; i < entityDetails.data.consumable_actions.length; i++) {
 				if (entityDetails.data.consumable_actions[i] == "Netflix") {
