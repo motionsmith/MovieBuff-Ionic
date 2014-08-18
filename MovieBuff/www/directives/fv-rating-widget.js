@@ -17,7 +17,7 @@
 
 			var windowWidth = $(window).width();
 			var windowHeight = $(window).height();
-			element.find("#rating-widget").css('top', windowHeight - 125);
+			element.find("#rating-widget").css('top', windowHeight - 130);
 			
 			buttons = [
 			{
